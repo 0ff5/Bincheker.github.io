@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Consulta de BIN</title>
+	<style>
+		body {
+			font-family: Arial, sans-serif;
+			margin: 0;
+			padding: 0;
+			background-color: #bdfdff;
+			animation: background 10s ease-in-out infinite alternate;
+		}
+		h1 {
+			background-color: #0a0a0a;
+			color: #fff;
+			margin: 0;
+			padding: 20px;
+			text-align: center;
+			animation: slide-down 1s ease-out;
+		}
+		form {
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			margin: 20px;
+			animation: slide-up 1s ease-out;
+		}
+		label {
+			font-size: 18px;
+			margin-bottom: 10px;
+			animation: fade-in 1s ease-out;
+		}
+		input[type="text"] {
+			font-size: 18px;
+			padding: 10px;
+			border: 1px solid #ccc;
+			border-radius: 5px;
+			width: 300px;
+			max-width: 100%;
+			margin-bottom: 20px;
+			animation: fade-in 1s ease-out;
+		}
+		button[type="submit"] {
+			font-size: 18px;
+			padding: 10px 20px;
+			background-color: #0a0a0a;
+			color: #fff;
+			border: none;
+			border-radius: 5px;
+			cursor: pointer;
+			animation: fade-in 1s ease-out;
+		}
+		table {
+			border-collapse: collapse;
+			margin: 20px;
+			width: 100%;
+			max-width: 800px;
+			animation: slide-up 1s ease-out;
+		}
+		th, td {
+			padding: 10px;
+			border: 1px solid #ccc;
+			text-align: left;
+		}
+		th {
+			background-color: #0a0a0a;
+			color: #fff;
+		}
+		@keyframes slide-down {
+			from {
+				transform: translateY(-100%);
+			}
+			to {
+				transform: translateY(0);
+			}
+		}
+		@keyframes slide-up {
+			from {
+				transform: translateY(100%);
+			}
+			to {
+				transform: translateY(0);
+			}
+		}
+		@keyframes fade-in {
+			from {
+				opacity: 0;
+			}
+			to {
+				opacity: 1;
+			}
+		}
+		@keyframes background {
+				background-color: #0a0a0a;
+			}
+		}
+	</style>
+</head>
+<body>
+	<h1>Consulta de BIN</h1>
+	<form onsubmit="consultarBIN(); return false;">
+		<label for="bin">Ingrese el número de BIN:</label>
+		<input type="text" id="bin" name="bin" required>
+		<button type="submit">Consultar</button>
+	</form>
+	<div id="resultado"></div>
+<script>
+    function consultarBIN() {
+        var bin = document.getElementById("bin").value;
+        var url = "https://lookup.binlist.net/" + bin;
+        var xhr = new XMLHttpRequest();
+        xhr.open("GET", url);
+        xhr.onload = function() {
+            if (xhr.status === 200) {
+                var response = JSON.parse(xhr.responseText);
+                var resultado = document.getElementById("resultado");
+                resultado.innerHTML = "<table><tr><th colspan='2'>Información del BIN</th></tr><tr><td><strong>Modelo:</strong></td><td>" + response.scheme + "</td></tr><tr><td><strong>Banco:</strong></td><td>" + response.bank.name + "</td></tr><tr><td><strong>País:</strong></td><td>" + response.country.name + " (" + response.country.alpha2 + ")</td></tr><tr><td><strong>Tipo de Tarjeta:</strong></td><td>" + response.type + "</td></tr><tr><td><strong>Marca:</strong></td><td>" + response.brand + "</td></tr><tr><td><strong>Es prepago?</strong></td><td>" + (response.prepaid ? "Sí" : "No") + "</td></tr><tr><td><strong>Divisa:</strong></td><td>" + response.country.currency + "</td></tr><tr><td><strong>Ciudad:</strong></td><td>" + response.bank.city + "</td></tr></table>";
+                resultado.style.animation = "slide-up 1s ease-out";
+            } else {
+                var resultado = document.getElementById("resultado");
+                resultado.innerHTML = "<p>No se encontró información para el BIN ingresado.</p>";
+                resultado.style.animation = "slide-up 1s ease-out";
+            }
+        };
+        xhr.send();
+    }
+</script>
